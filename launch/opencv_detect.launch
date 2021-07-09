@@ -1,0 +1,21 @@
+<launch>
+    <node pkg= "traffic_detection" name="detect_opencv" type="opencv_detect_ros.py"  output="screen"> 
+    </node>
+
+        
+    <node pkg="rosbag" type="play" name="rosbag" args="-d 1 /home/angelo/rosbag/stop_sign_1/1.bag">
+
+        <!-- <param name="image_width" value="600" />
+        <param name="image_height" value="600" /> -->
+        <!-- <remap from="" to="/odem_in"/> -->
+        <!-- <remap from="/resize_img/image" to="/image_in"/> -->
+    </node>
+
+    <!-- <node pkg="image_view" type="image_view" respawn="false"  name="raw_feed" output="screen">
+        <remap from="image" to="/front_camera/image_raw" />
+    </node> -->
+
+    <node pkg="image_view" type="image_view" respawn="false"  name="viz_feed" output="screen">
+        <remap from="image" to="/visualize_image" />
+    </node>
+</launch>

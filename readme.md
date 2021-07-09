@@ -1,3 +1,8 @@
+## About
+
+GM Autodrive Challenge is a competition inviting various research focused schools in competition to develop the best autonomous vehicle. This repository represents the ROS package for Traffic Sign and Signal recognition 2021 utilizing Yolov4 architecture to identify relevant visual information such as speed limit signs and traffic lights for autonomous driving. Worked alongside Angelo Yang https://www.linkedin.com/in/ryang42, Nicholas Vacek https://www.linkedin.com/in/jung-hoon-seo-5ab813178, and Jung Hoon Seo https://www.linkedin.com/in/nicholas-vacek-314a23187
+We ultimately managed to place 3rd in great success and more information can be found here! http://autodrive.tamu.edu/ 
+
 ## Demo
 
 [![Link to Youtube with Video Demonstration of project](https://img.youtube.com/vi/pdphwxuSitw/0.jpg)](https://www.youtube.com/watch?v=pdphwxuSitw)

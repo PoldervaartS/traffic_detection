@@ -1,4 +1,3 @@
-from glob2 import glob # for python 2
 from distutils.core import setup
 from catkin_pkg.python_setup import generate_distutils_setup
 
@@ -29,8 +28,8 @@ output_packages = []
 # -- builds YOLOv4, adds output packages.
 if packages_to_build["yolov4tf"]:
     print("################## Binding YOLOv4 Files ########################")
-    os.chdir(home + "/catkin_ws/src/traffic_detection")
-    os.system("python bind.py build")
+    os.chdir(cwd)
+    os.system("python3 bind.py build")
 
     output_packages.extend([
         'yolov4',
@@ -44,7 +43,7 @@ if packages_to_build["yolov4tf"]:
 # -- Builds darknet, adds output packages
 if packages_to_build["darknet"]:
     print("################## Running make in darknet #####################")
-    os.chdir(home + "/catkin_ws/src/traffic_detection/src/darknet")
+    os.chdir(cwd + "/src/darknet")
     os.system("make")
 
     output_packages.extend([

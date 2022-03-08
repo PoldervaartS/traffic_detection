@@ -5,10 +5,9 @@
   <description>Traffic Signs and Signals detection package</description>
 
 
+  <maintainer email="shane.poldervaart@tamu.edu">Shane Poldervaart</maintainer>
   <maintainer email="rengang.yang@tamu.edu">Angelo Yang</maintainer>
   <maintainer email="nicholasvacek17@tamu.edu">Nicholas Vacek</maintainer>
-  <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
-  <!-- <maintainer email="jane.doe@example.com">Jane Doe</maintainer> -->
 
   
   <license>MIT</license>

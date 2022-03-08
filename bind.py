@@ -1,5 +1,3 @@
-from glob2 import glob # for python 2
-
 from setuptools import setup
 from pybind11.setup_helpers import ParallelCompile, Pybind11Extension, build_ext
 

@@ -60,14 +60,14 @@ class SignMessageOutput:
         msg.what = self.label_dict[int(box[4])]
 
         pixelWidth = box[2] * self.cameraWidth
-        msg.size_x = pixelWidth
+        msg.size_x = int(pixelWidth)
         x = box[0] * self.cameraWidth - pixelWidth/2
-        msg.coor_x = x
+        msg.coor_x = int(x)
 
         pixelHeight = box[3] * self.cameraHeight
-        msg.size_y = pixelHeight
+        msg.size_y = int(pixelHeight)
         y = box[1] * self.cameraHeight - pixelHeight/2
-        msg.coor_y = y
+        msg.coor_y = int(y)
         inchDistance = self.focalLength * SignMessageOutput.signHeights[msg.what] / pixelHeight
         msg.z = inchDistance * SignMessageOutput.INCHTOMETERS
         msg.header = self.detectedSigns.header
@@ -82,12 +82,13 @@ class SignMessageOutput:
         msg = sign_detection_msg()
         msg.what = box[0]
 
-        msg.size_x = box[2][2] * self.cameraWidth/scaledWidth
-        msg.coor_x = box[2][0] * self.cameraWidth/scaledWidth
+        msg.size_x = int(box[2][2] * self.cameraWidth/scaledWidth)
+        msg.coor_x = int(box[2][0] * self.cameraWidth/scaledWidth)
+
 
         pixelHeight = box[2][3] * self.cameraHeight/scaledHeight
-        msg.size_y = pixelHeight
-        msg.coor_y = box[2][1] * self.cameraHeight/scaledHeight
+        msg.size_y = int(pixelHeight)
+        msg.coor_y = int(box[2][1] * self.cameraHeight/scaledHeight)
         inchDistance = self.focalLength * SignMessageOutput.signHeights[msg.what] / pixelHeight
         msg.z = inchDistance * SignMessageOutput.INCHTOMETERS
         msg.header = self.detectedSigns.header

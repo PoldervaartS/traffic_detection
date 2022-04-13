@@ -11,7 +11,6 @@ find_package(catkin REQUIRED COMPONENTS
   sensor_msgs
   std_msgs
   vision_msgs
-  OpenCV REQUIRED
   NO_MODULE
   PATHS /usr/local
   NO_DEFAULT_PATH

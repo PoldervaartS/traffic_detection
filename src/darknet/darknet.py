@@ -26,7 +26,7 @@ import math
 import random
 import os
 
-darknet_dir = os.path.expanduser("~") + "/catkin_ws/src/traffic_detection/src/darknet/"
+darknet_dir = "/home/autodrive/noetic_ws/src/traffic_detection/src/darknet/"
 
 class BOX(Structure):
     _fields_ = [("x", c_float),

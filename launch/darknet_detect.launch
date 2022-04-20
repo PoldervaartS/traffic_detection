@@ -3,7 +3,7 @@
     </node>
 
         
-    <node pkg="rosbag" type="play" name="rosbag" args="-d 1 /home/angelo/rosbag/stop_sign_1/1.bag">
+    <node pkg="rosbag" type="play" name="rosbag" args="-d 1 /home/autodrive/BagFiles/2022-03-01/2022-03-01-17-58-18.bag">
 
         <!-- <param name="image_width" value="600" />
         <param name="image_height" value="600" /> -->
@@ -15,7 +15,6 @@
         <remap from="image" to="/front_camera/image_raw" />
     </node> -->
 
-    <node pkg="image_view" type="image_view" respawn="false"  name="viz_feed" output="screen">
-        <remap from="image" to="/visualize_image" />
-    </node>
+    <node name="rqt_image_view" pkg="rqt_image_view" type="rqt_image_view" args="/visualize_image"/>
+
 </launch>

@@ -10,7 +10,7 @@ import os
 # choose package to build here
 packages_to_build = {
     "yolov4tf": False,
-    "darknet": False,
+    "darknet": True,
     "opencv" : False,
     "tensorflow": False, # TODO
 }

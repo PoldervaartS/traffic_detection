@@ -34,11 +34,19 @@ network, class_names, class_colors = darknet.load_network(
 def image_detection(image, network, class_names, class_colors, thresh):
     # Darknet doesn't accept numpy images.
     # Create one with image we reuse for each detect
+    crop_window_y1, crop_window_y2 = 0, 2000
+    crop_window_x1, crop_window_x2 = int(1000), int(3000)
+
     width = darknet.network_width(network)
     height = darknet.network_height(network)
     darknet_image = darknet.make_image(width, height, 3)
 
-    image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+    # img_copy = image_np
+        # img_copy = cv2.rectangle(img_copy, (crop_window_x1,crop_window_y1), (crop_window_x2,crop_window_y2), (255, 0, 255), thickness=2)
+    image_np = image[crop_window_y1:crop_window_y2, crop_window_x1:crop_window_x2]
+
+    image_rgb = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
     image_resized = cv2.resize(image_rgb, (width, height),
                                interpolation=cv2.INTER_LINEAR)
 
@@ -55,7 +63,7 @@ class Detector:
         self.bridge = CvBridge()
         # inputting info, image
         self.vis_pub = rospy.Publisher("visualize_image",Image, queue_size=1)
-        self.image_sub = rospy.Subscriber("/front_camera/image_raw", Image, self.image_yolo, queue_size=1, buff_size=2**24)
+        self.image_sub = rospy.Subscriber("/camera/image_raw", Image, self.image_yolo, queue_size=1, buff_size=2**24)
         
         # outputting sign info management
         self.signMessageOutput = SignMessageOutput(class_names)

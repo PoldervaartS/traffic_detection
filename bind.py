@@ -1,5 +1,6 @@
 from setuptools import setup
 from pybind11.setup_helpers import ParallelCompile, Pybind11Extension, build_ext
+import glob
 
 root_dir = "src/yolov4/"
 
@@ -11,7 +12,7 @@ ext_modules = [
     Pybind11Extension(
         # Ref: distutils.extension.Extension
         name="yolov4.common._common",
-        sources=sorted(glob(root_dir+"c_src/**/*.cpp", recursive=True)),
+        sources=sorted(glob.glob(root_dir+"c_src/**/*.cpp", recursive=True)),
         include_dirs=[root_dir+"c_src/"],  # -I
         define_macros=[(("VERSION_INFO", __version__))],  # -D<string>=<string>
         undef_macros=[],  # [string] -D<string>
@@ -32,7 +33,6 @@ setup(
 )
 
 # move compiled file over.
-import glob
 import shutil
 
 # .so for linux, .pyd for windows

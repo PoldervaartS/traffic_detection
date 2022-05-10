@@ -8,10 +8,14 @@ We ultimately managed to place 3rd in great success and more information can be 
 [![Link to Youtube with Video Demonstration of project](https://img.youtube.com/vi/pdphwxuSitw/0.jpg)](https://www.youtube.com/watch?v=pdphwxuSitw)
 
 
-## Get weight files here:
-https://drive.google.com/drive/folders/1JYdu6nVTAw-i4xpqJ-Zrzcw2Wiwc3alU?usp=sharing
-
-Training is still not done so prediction results may be rough!
+## Get Darknet weight and SVM files here:
+- https://drive.google.com/drive/folders/1JYdu6nVTAw-i4xpqJ-Zrzcw2Wiwc3alU?usp=sharing
+	- use the best weights zip
+	- when unzipped into /models change obj.data to have the right file path
+- https://drive.google.com/file/d/14GAAv7weqv6pUgdmdOUirZx_qOCrAiqp/view?usp=sharing 
+	- only 1 file
+	- Integrated the SVM module of [Speed Limit Classification SVM from Capstone](https://github.tamu.edu/AutoDrive-II-Common/speed_limit_classification_mirror) into message output
+### Both go into traffic_detection/models folder
 
 ### Weight suffix descriptions:
 - (name)_**(number, multiple of 10,000)**.weights
@@ -31,8 +35,6 @@ Make sure to update the references in `scripts/detect_ros.py` to point to these 
 
 ## To test:
 - bunch of packages: `todo` just install whatever is missing for now
-- ROS is stupid old and is mostly python2.
-- God there was a lot of code that needed to be rewritten into python 2
 - CFG files need tweaking to work correctly for inference. THis is just the nature of how it works.
 - If using darknet rather than tensorflow, it imports an obj.data file, which can be set.
 	- See: [this link](https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects), scroll to step 3.
@@ -71,4 +73,4 @@ Using this: https://github.com/hhk7734/tensorflow-yolov4 branch to import the mo
 - `cd ~/catkin_ws/src/traffic_detection/src/darknet && make`		-> should no longer be needed (handled by setup.py)
 - `cd ~/catkin_ws && catkin_make`
 - edit `traffic_detect.launch` to point to where the bag file is.
-- `roslaunch traffic_detection traffic_detect.launch`
+- `roslaunch traffic_detection darknet_detect.launch`

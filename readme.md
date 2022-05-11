@@ -72,5 +72,6 @@ Using this: https://github.com/hhk7734/tensorflow-yolov4 branch to import the mo
 - `cd ~/catkin_ws/src/traffic_detection && python bind.py build` 	-> should no longer be needed (handled by setup.py)
 - `cd ~/catkin_ws/src/traffic_detection/src/darknet && make`		-> should no longer be needed (handled by setup.py)
 - `cd ~/catkin_ws && catkin_make`
-- edit `traffic_detect.launch` to point to where the bag file is.
+- edit `traffic_detect.launch` to point to where the bag file is. Make sure 
+- edit `darknet_detect_ros.py` line 43 if rosbag has different topics for the camera image
 - `roslaunch traffic_detection darknet_detect.launch`

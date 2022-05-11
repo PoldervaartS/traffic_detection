@@ -42,15 +42,17 @@ class Detector:
         self.image_sub = rospy.Subscriber("/camera/image_raw", Image, self.image_yolo, queue_size=1, buff_size=2**24)
         
         # outputting sign info management
-        self.signMessageOutput = SignMessageOutput(class_names)
+        self.crop_window_y1, self.crop_window_y2 = 0, 2000
+        self.crop_window_x1, self.crop_window_x2 = int(1000), int(3000)
+        width = self.crop_window_x2 - self.crop_window_x1
+        height = self.crop_window_y2 - self.crop_window_y1
+        self.signMessageOutput = SignMessageOutput(class_names, cameraWidth=width, cameraHeight=height)
         self.speedLimitSVM = SpeedLimitSVM()
 
 
     def image_detection(self, image, network, class_names, class_colors, thresh):
         # Darknet doesn't accept numpy images.
         # Create one with image we reuse for each detect
-        crop_window_y1, crop_window_y2 = 0, 2000
-        crop_window_x1, crop_window_x2 = int(1000), int(3000)
 
         width = darknet.network_width(network)
         height = darknet.network_height(network)
@@ -59,7 +61,7 @@ class Detector:
 
         # img_copy = image_np
         # img_copy = cv2.rectangle(img_copy, (crop_window_x1,crop_window_y1), (crop_window_x2,crop_window_y2), (255, 0, 255), thickness=2)
-        image_np = image[crop_window_y1:crop_window_y2, crop_window_x1:crop_window_x2]
+        image_np = image[self.crop_window_y1:self.crop_window_y2, self.crop_window_x1:self.crop_window_x2]
 
         image_rgb = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
         image_resized = cv2.resize(image_rgb, (width, height),
@@ -78,14 +80,14 @@ class Detector:
                 X_coord, Y_coord, signWidth, signHeight = detection[2]
                 # image sized down to 512, 512
                 # original height would be 
-                originalWidth = crop_window_x2 - crop_window_x1
-                originalHeight = crop_window_y2 - crop_window_y1
+                originalWidth = self.crop_window_x2 - self.crop_window_x1
+                originalHeight = self.crop_window_y2 - self.crop_window_y1
 
                 croppedImg = image_rgb[int( (Y_coord - signHeight/2) * originalHeight/height):int( (Y_coord + signHeight/2)* originalHeight/height),
                     int( (X_coord-signWidth/2) * originalWidth/width):int( (X_coord + signWidth/2) * originalWidth/width)]
                 # cv2.imwrite('/home/autodrive/noetic_ws/src/traffic_detection/test.png',croppedImg)
                 value = self.speedLimitSVM.predictImg(croppedImg)
-
+                
             detections[i] = [*detection, value]
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), detections
 
@@ -106,7 +108,7 @@ class Detector:
         scaledWidth, scaledHeight, _ = image_darknet.shape
         if(len(detections) > 0):
             self.signMessageOutput.setTimeToNow()
-            [ self.signMessageOutput.addDarknetbboxToMessage(detection, scaledWidth, scaledHeight) for detection in detections ]
+            [ self.signMessageOutput.addDarknetbboxToMessage(detection, scaledWidth, scaledHeight, self.crop_window_x1, self.crop_window_y1) for detection in detections ]
 
         try:
             image_out = self.bridge.cv2_to_imgmsg(image_darknet,"bgr8")

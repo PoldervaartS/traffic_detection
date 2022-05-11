@@ -107,7 +107,7 @@ class SignMessageOutput:
     # [ label, prob, (X_coord, Y_coord, width, height), value] - Darknet bounding box format
     # -- x,y,w,h in pixel count. unsure if x & y are top left or center
     # scaledWidth & scaledHeight are due to having to remake & scale the image
-    def addDarknetbboxToMessage(self, box, scaledWidth, scaledHeight):
+    def addDarknetbboxToMessage(self, box, scaledWidth, scaledHeight, xCrop0, yCrop0):
         if( self.detectedSigns.header.stamp is None):
             raise TimeStampError('The rosmessage does not have a timestamp\t use setTimeToNow() before formulating message')
         msg = sign_detection_msg()
@@ -119,12 +119,12 @@ class SignMessageOutput:
         msg.value = box[3]
 
         msg.size_x = int(box[2][2] * self.cameraWidth/scaledWidth)
-        msg.coor_x = int(box[2][0] * self.cameraWidth/scaledWidth)
+        msg.coor_x = int(box[2][0] * self.cameraWidth/scaledWidth) + xCrop0
 
 
         pixelHeight = box[2][3] * self.cameraHeight/scaledHeight
         msg.size_y = int(pixelHeight)
-        msg.coor_y = int(box[2][1] * self.cameraHeight/scaledHeight)
+        msg.coor_y = int(box[2][1] * self.cameraHeight/scaledHeight) + yCrop0 - int(msg.size_y/2)
         inchDistance = self.focalLength * SignMessageOutput.signHeights[box[0]] / pixelHeight
         msg.z = inchDistance * SignMessageOutput.INCHTOMETERS
         msg.header = self.detectedSigns.header

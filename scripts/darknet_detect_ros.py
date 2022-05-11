@@ -81,7 +81,8 @@ class Detector:
                 originalWidth = crop_window_x2 - crop_window_x1
                 originalHeight = crop_window_y2 - crop_window_y1
 
-                croppedImg = image_rgb[int( (Y_coord - signHeight/2) * originalHeight/height):int( (Y_coord + signHeight/2)* originalHeight/height), int( (X_coord-signWidth/2) * originalWidth/width):int( (X_coord + signWidth/2) * originalWidth/width)]
+                croppedImg = image_rgb[int( (Y_coord - signHeight/2) * originalHeight/height):int( (Y_coord + signHeight/2)* originalHeight/height),
+                    int( (X_coord-signWidth/2) * originalWidth/width):int( (X_coord + signWidth/2) * originalWidth/width)]
                 # cv2.imwrite('/home/autodrive/noetic_ws/src/traffic_detection/test.png',croppedImg)
                 value = self.speedLimitSVM.predictImg(croppedImg)
 

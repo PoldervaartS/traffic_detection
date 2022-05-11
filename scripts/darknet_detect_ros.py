@@ -39,6 +39,7 @@ class Detector:
         self.bridge = CvBridge()
         # inputting info, image
         self.vis_pub = rospy.Publisher("visualize_image",Image, queue_size=1)
+        # make sure the camera feed is correct
         self.image_sub = rospy.Subscriber("/camera/image_raw", Image, self.image_yolo, queue_size=1, buff_size=2**24)
         
         # outputting sign info management
@@ -58,9 +59,6 @@ class Detector:
         height = darknet.network_height(network)
         darknet_image = darknet.make_image(width, height, 3)
 
-
-        # img_copy = image_np
-        # img_copy = cv2.rectangle(img_copy, (crop_window_x1,crop_window_y1), (crop_window_x2,crop_window_y2), (255, 0, 255), thickness=2)
         image_np = image[self.crop_window_y1:self.crop_window_y2, self.crop_window_x1:self.crop_window_x2]
 
         image_rgb = cv2.cvtColor(image_np, cv2.COLOR_BGR2RGB)
@@ -71,6 +69,7 @@ class Detector:
         detections = darknet.detect_image(network, class_names, darknet_image, thresh=thresh)
 
         darknet.free_image(darknet_image)
+        # boxes are drawn here
         image = darknet.draw_boxes(detections, image_resized, class_colors)
         for i in range(len(detections)):
 
@@ -85,10 +84,11 @@ class Detector:
 
                 croppedImg = image_rgb[int( (Y_coord - signHeight/2) * originalHeight/height):int( (Y_coord + signHeight/2)* originalHeight/height),
                     int( (X_coord-signWidth/2) * originalWidth/width):int( (X_coord + signWidth/2) * originalWidth/width)]
-                # cv2.imwrite('/home/autodrive/noetic_ws/src/traffic_detection/test.png',croppedImg)
+                # cv2.imwrite('/home/autodrive/noetic_ws/src/traffic_detection/toSVM.png',croppedImg)
                 value = self.speedLimitSVM.predictImg(croppedImg)
                 
             detections[i] = [*detection, value]
+        
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), detections
 
 
@@ -114,7 +114,7 @@ class Detector:
             image_out = self.bridge.cv2_to_imgmsg(image_darknet,"bgr8")
         except CvBridgeError as e:
             print(e)
-
+        # image is published here
         self.vis_pub.publish(image_out)
         self.signMessageOutput.publishMessages()
 

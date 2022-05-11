@@ -119,7 +119,7 @@ class SignMessageOutput:
         msg.value = box[3]
 
         msg.size_x = int(box[2][2] * self.cameraWidth/scaledWidth)
-        msg.coor_x = int(box[2][0] * self.cameraWidth/scaledWidth) + xCrop0
+        msg.coor_x = int( (box[2][0]) * self.cameraWidth/scaledWidth) + xCrop0 - int(msg.size_x/2)
 
 
         pixelHeight = box[2][3] * self.cameraHeight/scaledHeight

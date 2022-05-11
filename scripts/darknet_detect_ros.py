@@ -67,22 +67,25 @@ class Detector:
 
         darknet.copy_image_from_bytes(darknet_image, image_resized.tobytes())
         detections = darknet.detect_image(network, class_names, darknet_image, thresh=thresh)
+
+        darknet.free_image(darknet_image)
+        image = darknet.draw_boxes(detections, image_resized, class_colors)
         for i in range(len(detections)):
 
             detection = detections[i]
             value = 0
             if detection[0] == 'speedLimit':
-                X_coord, Y_coord, width, height = detection[2]
-                croppedImg = image_resized[Y_coord:(Y_coord + height), X_coord:(X_coord + width)]
+                X_coord, Y_coord, signWidth, signHeight = detection[2]
+                # image sized down to 512, 512
+                # original height would be 
+                originalWidth = crop_window_x2 - crop_window_x1
+                originalHeight = crop_window_y2 - crop_window_y1
+
+                croppedImg = image_rgb[int( (Y_coord - signHeight/2) * originalHeight/height):int( (Y_coord + signHeight/2)* originalHeight/height), int( (X_coord-signWidth/2) * originalWidth/width):int( (X_coord + signWidth/2) * originalWidth/width)]
+                # cv2.imwrite('/home/autodrive/noetic_ws/src/traffic_detection/test.png',croppedImg)
                 value = self.speedLimitSVM.predictImg(croppedImg)
-                print(value)
 
             detections[i] = [*detection, value]
-                    
-                    
-        darknet.free_image(darknet_image)
-        # Potential issue here as draw_boxes might require it to be the exact format. Probably just edit dettections after drawing if so
-        image = darknet.draw_boxes(detections, image_resized, class_colors)
         return cv2.cvtColor(image, cv2.COLOR_BGR2RGB), detections
 
 

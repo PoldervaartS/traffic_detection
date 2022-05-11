@@ -104,7 +104,7 @@ class SignMessageOutput:
         msg.header = self.detectedSigns.header
         self.detectedSigns.s.append(msg)
 
-    # [ label, prob, (X_coord, Y_coord, width, heigh), value] - Darknet bounding box format
+    # [ label, prob, (X_coord, Y_coord, width, height), value] - Darknet bounding box format
     # -- x,y,w,h in pixel count. unsure if x & y are top left or center
     # scaledWidth & scaledHeight are due to having to remake & scale the image
     def addDarknetbboxToMessage(self, box, scaledWidth, scaledHeight):
@@ -113,7 +113,7 @@ class SignMessageOutput:
         msg = sign_detection_msg()
         # Do the map here. If not in set then just skip it?
         try:
-            msg.type = self.signLabelsToInts[self.label_dict[int(box[4])]]
+            msg.type = self.signLabelsToInts[box[0]]
         except:
             msg.type = 0
         msg.value = box[3]
@@ -125,7 +125,7 @@ class SignMessageOutput:
         pixelHeight = box[2][3] * self.cameraHeight/scaledHeight
         msg.size_y = int(pixelHeight)
         msg.coor_y = int(box[2][1] * self.cameraHeight/scaledHeight)
-        inchDistance = self.focalLength * SignMessageOutput.signHeights[msg.what] / pixelHeight
+        inchDistance = self.focalLength * SignMessageOutput.signHeights[box[0]] / pixelHeight
         msg.z = inchDistance * SignMessageOutput.INCHTOMETERS
         msg.header = self.detectedSigns.header
         self.detectedSigns.s.append(msg)

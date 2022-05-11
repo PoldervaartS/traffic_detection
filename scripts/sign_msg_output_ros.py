@@ -32,6 +32,37 @@ class SignMessageOutput:
         'roundabout' : 24,
         'intersection' : 36,
     }
+# stop
+# yield
+# pedestrianCrossing
+# speedLimit
+# turnRight
+# turnLeft
+# noRightTurn
+# noLeftTurn
+# doNotEnter
+# rightLaneMustTurn not 100% sure on this
+
+    signLabelsToInts = {
+        # 0: 'Unknown', 
+        'speedLimit': 1, 
+        # 2: 'Speed Limit (KPH)', We don't have this in training model.
+        'stop': 3,# 3: 'Stop',
+        'yield': 4, 
+        'noLeftTurn': 5, 
+        'noRightTurn': 6,
+        'doNotEnter': 7, 
+        'turnLeft': 8,
+        'turnRight': 9,
+        #  10: 'Railroad Crossing',
+        'pedestrianCrossing': 11,
+        #  12: 'No Turn On Red',
+        #  13: 'No U-Turn', 
+        # 14: 'One Way (Left)',
+        #  15: 'One Way (Right)',
+        #  16: 'No Parking',
+        #  17: 'Handicap Parking'
+    }
 
     INCHTOMETERS = 0.0254
 
@@ -73,14 +104,19 @@ class SignMessageOutput:
         msg.header = self.detectedSigns.header
         self.detectedSigns.s.append(msg)
 
-    # [ label, prob, (X_coord, Y_coord, width, heigh)] - Darknet bounding box format
+    # [ label, prob, (X_coord, Y_coord, width, heigh), value] - Darknet bounding box format
     # -- x,y,w,h in pixel count. unsure if x & y are top left or center
     # scaledWidth & scaledHeight are due to having to remake & scale the image
     def addDarknetbboxToMessage(self, box, scaledWidth, scaledHeight):
         if( self.detectedSigns.header.stamp is None):
             raise TimeStampError('The rosmessage does not have a timestamp\t use setTimeToNow() before formulating message')
         msg = sign_detection_msg()
-        msg.what = box[0]
+        # Do the map here. If not in set then just skip it?
+        try:
+            msg.type = self.signLabelsToInts[self.label_dict[int(box[4])]]
+        except:
+            msg.type = 0
+        msg.value = box[3]
 
         msg.size_x = int(box[2][2] * self.cameraWidth/scaledWidth)
         msg.coor_x = int(box[2][0] * self.cameraWidth/scaledWidth)
